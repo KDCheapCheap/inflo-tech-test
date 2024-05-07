@@ -33,6 +33,18 @@ public class DataContext : DbContext, IDataContext
     public IQueryable<TEntity> GetAll<TEntity>() where TEntity : class
         => base.Set<TEntity>();
 
+    public TEntity GetById<TEntity>(long id) where TEntity : class
+    {
+        var entity = Set<TEntity>().Find(id);
+
+        if (entity == null)
+        {
+            throw new Exception("Cannot find user for ID: " +  id);
+        }
+
+        return entity;
+    }
+
     public void Create<TEntity>(TEntity entity) where TEntity : class
     {
         base.Add(entity);

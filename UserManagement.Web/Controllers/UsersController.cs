@@ -54,4 +54,27 @@ public class UsersController : Controller
 
         return View(model);
     }
+
+    [HttpGet]
+    [Route("View/{userId}")]
+    [ActionName("UserSummary")]
+    public ViewResult ViewUser(int userId)
+    {
+        var user = _userService.GetUserById(userId);
+
+        var userModel = new UserSummaryViewModel
+        {
+            user = new UserListItemViewModel
+            {
+                Id = user.Id,
+                Forename = user.Forename,
+                Surname = user.Surname,
+                Email = user.Email,
+                DateOfBirth = user.DateOfBirth,
+                IsActive = user.IsActive
+            }
+        };
+
+        return View(userModel);
+    }
 }
