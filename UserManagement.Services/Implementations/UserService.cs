@@ -33,6 +33,11 @@ public class UserService : IUserService
         return _dataAccess.Create(newUser);
     }
 
+    public User UpdateUser(User editedUser)
+    {
+        return _dataAccess.Update(editedUser);
+    }
+
     public void DeleteUser(long id)
     {
         User userToDelete = GetUserById(id);

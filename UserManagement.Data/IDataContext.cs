@@ -25,7 +25,7 @@ public interface IDataContext
     /// <typeparam name="TEntity"></typeparam>
     /// <param name="entity"></param>
     /// <returns></returns>
-    void Update<TEntity>(TEntity entity) where TEntity : class;
+    TEntity Update<TEntity>(TEntity entity) where TEntity : class;
 
     void Delete<TEntity>(TEntity entity) where TEntity : class;
     TEntity GetById<TEntity>(long id) where TEntity : class;

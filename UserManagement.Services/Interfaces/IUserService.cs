@@ -36,4 +36,6 @@ public interface IUserService
     /// </summary>
     /// <param name="id">ID of the user to delete.</param>
     void DeleteUser(long id);
+
+    User UpdateUser(User editedUser);
 }

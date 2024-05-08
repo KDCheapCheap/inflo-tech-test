@@ -53,10 +53,12 @@ public class DataContext : DbContext, IDataContext
         return entity;
     }
 
-    public new void Update<TEntity>(TEntity entity) where TEntity : class
+    public new TEntity Update<TEntity>(TEntity entity) where TEntity : class
     {
         base.Update(entity);
         SaveChanges();
+
+        return entity;
     }
 
     public void Delete<TEntity>(TEntity entity) where TEntity : class

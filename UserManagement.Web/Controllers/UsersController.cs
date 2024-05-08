@@ -107,6 +107,40 @@ public class UsersController : Controller
     }
 
     [HttpGet]
+    [Route("EditUser/{userId}")]
+    [ActionName("EditUser")]
+    public ViewResult EditUserPage(long userId)
+    {
+        var userToEdit = _userService.GetUserById(userId);
+
+        if(userToEdit == null)
+        {
+            RedirectToAction("List");
+            return View();
+        }
+
+        return View(userToEdit);
+    }
+
+    [HttpPost]
+    [Route("UpdateUser")]
+    [ActionName("UpdateUser")]
+    public IActionResult EditUser(User userToEdit)
+    {
+        try
+        {
+            var editedUser = _userService.UpdateUser(userToEdit);
+
+            return RedirectToAction("View", new { id = editedUser.Id });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error Editing User. Message: {ex.Message} Stack trace: {ex.StackTrace}");
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet]
     [Route("Delete/{userId}")]
     [ActionName("DeleteUser")]
     public IActionResult DeleteUser(long userId)
