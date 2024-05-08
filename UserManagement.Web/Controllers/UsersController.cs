@@ -106,7 +106,7 @@ public class UsersController : Controller
         return View(userModel);
     }
 
-    [HttpDelete]
+    [HttpGet]
     [Route("Delete/{userId}")]
     [ActionName("DeleteUser")]
     public IActionResult DeleteUser(long userId)
