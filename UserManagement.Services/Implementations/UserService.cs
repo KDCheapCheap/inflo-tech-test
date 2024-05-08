@@ -27,4 +27,21 @@ public class UserService : IUserService
     public IEnumerable<User> GetAll() => _dataAccess.GetAll<User>();
 
     public User GetUserById(long id) => _dataAccess.GetById<User>(id);
+
+    public User CreateUser(User newUser)
+    {
+        return _dataAccess.Create(newUser);
+    }
+
+    public void DeleteUser(long id)
+    {
+        User userToDelete = GetUserById(id);
+
+        if(userToDelete == null)
+        {
+            throw new KeyNotFoundException("User not found with ID: " + id);
+        }
+
+        _dataAccess.Delete(userToDelete);
+    }
 }

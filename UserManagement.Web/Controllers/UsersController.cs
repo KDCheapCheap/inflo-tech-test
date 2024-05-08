@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Microsoft.AspNetCore.Routing;
+using UserManagement.Models;
 using UserManagement.Services.Domain.Interfaces;
 using UserManagement.Web.Models.Users;
 
@@ -56,9 +58,35 @@ public class UsersController : Controller
     }
 
     [HttpGet]
+    [Route("NewUser")]
+    [ActionName("CreateUser")]
+    public ViewResult CreateUserPage()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [Route("CreateUser")]
+    [ActionName("CreateUser")]
+    public IActionResult CreateUser(User newUser)
+    {
+        try
+        {
+            var createdUser = _userService.CreateUser(newUser);
+
+            return RedirectToAction("View", new { id = createdUser.Id });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error Creating User. Message: {ex.Message} Stack trace: {ex.StackTrace}");
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet]
     [Route("View/{userId}")]
     [ActionName("UserSummary")]
-    public ViewResult ViewUser(int userId)
+    public ViewResult ViewUser(long userId)
     {
         var user = _userService.GetUserById(userId);
 
@@ -76,5 +104,23 @@ public class UsersController : Controller
         };
 
         return View(userModel);
+    }
+
+    [HttpDelete]
+    [Route("Delete/{userId}")]
+    [ActionName("DeleteUser")]
+    public IActionResult DeleteUser(long userId)
+    {
+        try
+        {
+            _userService.DeleteUser(userId);
+
+            return RedirectToAction("List");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error deleting user. Message: {ex.Message}");
+            return BadRequest(ex.Message);
+        }
     }
 }

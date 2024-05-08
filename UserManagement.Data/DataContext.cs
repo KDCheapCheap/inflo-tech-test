@@ -45,10 +45,12 @@ public class DataContext : DbContext, IDataContext
         return entity;
     }
 
-    public void Create<TEntity>(TEntity entity) where TEntity : class
+    public TEntity Create<TEntity>(TEntity entity) where TEntity : class
     {
         base.Add(entity);
         SaveChanges();
+
+        return entity;
     }
 
     public new void Update<TEntity>(TEntity entity) where TEntity : class
