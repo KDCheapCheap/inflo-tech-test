@@ -1,11 +1,14 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 using UserManagement.Data.Enums;
 
 namespace UserManagement.Data.Entities;
 
 public class UserLog
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
+    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public long Id { get; set; }
 
     public long UserId { get; set; }
     public string Message { get; set; } = string.Empty;

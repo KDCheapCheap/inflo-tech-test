@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using UserManagement.Data;
 using UserManagement.Data.Entities;
 using UserManagement.Models;
 using UserManagement.Services.Domain.Interfaces;
@@ -13,7 +15,15 @@ namespace UserManagement.WebMS.Controllers;
 public class UsersController : Controller
 {
     private readonly IUserService _userService;
-    public UsersController(IUserService userService) => _userService = userService;
+    private readonly ILogger<UsersController> _logger;
+    private readonly IUserLoggingService _userLoggingService;
+
+    public UsersController(IUserService userService, ILogger<UsersController> logger, IUserLoggingService userLoggingService)
+    {
+        _userService = userService;
+        _logger = logger;
+        _userLoggingService = userLoggingService;
+    }
 
     [HttpGet]
     [Route("List")]
@@ -76,6 +86,17 @@ public class UsersController : Controller
         {
             var createdUser = _userService.CreateUser(newUser);
 
+            UserLog createLog = new UserLog()
+            {
+                UserId = createdUser.Id,
+                Action = Data.Enums.UserLogAction.Add,
+                Created = DateTime.UtcNow,
+                Message = $"Created {createdUser.Forename} {createdUser.Surname}",
+                AfterChange = JsonConvert.SerializeObject(createdUser)
+            };
+
+            _userLoggingService.CreateLogEntry(createLog);
+
             return RedirectToAction("View", new { id = createdUser.Id });
         }
         catch (Exception ex)
@@ -129,27 +150,30 @@ public class UsersController : Controller
     [ActionName("UpdateUser")]
     public IActionResult EditUser(User userToEdit)
     {
-        User userBeforeChange = _userService.GetUserById(userToEdit.Id);
-
+        string userBeforeChange = JsonConvert.SerializeObject(_userService.GetUserByIdUntracked(userToEdit.Id));
+        
         try
         {
-            var editedUser = _userService.UpdateUser(userToEdit);
-
             UserLog editLog = new UserLog()
             {
                 UserId = userToEdit.Id,
                 Action = Data.Enums.UserLogAction.Edit,
                 Created = DateTime.UtcNow,
-                Message = $"Edited {userBeforeChange.Forename} {userBeforeChange.Surname}",
-                BeforeChange = JsonConvert.SerializeObject(userBeforeChange),
-                AfterChange = JsonConvert.SerializeObject(editedUser)
+                Message = $"Edited User ID: {userToEdit.Id}",
+                BeforeChange = userBeforeChange,
             };
+
+            var editedUser = _userService.UpdateUser(userToEdit);
+
+            editLog.AfterChange = JsonConvert.SerializeObject(editedUser);
+
+            _userLoggingService.CreateLogEntry(editLog);
 
             return RedirectToAction("View", new { id = editedUser.Id });
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error Editing User. Message: {ex.Message} Stack trace: {ex.StackTrace}");
+            _logger.LogError($"Error Editing User. Message: {ex.Message} Stack trace: {ex.StackTrace}");
             return BadRequest(ex.Message);
         }
     }
@@ -161,13 +185,26 @@ public class UsersController : Controller
     {
         try
         {
+            User userBeforeDeletion = _userService.GetUserById(userId);
             _userService.DeleteUser(userId);
+
+            UserLog deleteLog = new UserLog()
+            {
+                UserId = userBeforeDeletion.Id,
+                Action = Data.Enums.UserLogAction.Edit,
+                Created = DateTime.UtcNow,
+                Message = $"Deleted {userBeforeDeletion.Forename} {userBeforeDeletion.Surname}",
+                BeforeChange = JsonConvert.SerializeObject(userBeforeDeletion),
+                AfterChange = string.Empty
+            };
+
+            _userLoggingService.CreateLogEntry(deleteLog);
 
             return RedirectToAction("List");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error deleting user. Message: {ex.Message}");
+            _logger.LogError($"Error deleting user. Message: {ex.Message}");
             return BadRequest(ex.Message);
         }
     }

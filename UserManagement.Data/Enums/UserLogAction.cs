@@ -3,7 +3,6 @@
 public enum UserLogAction
 {
     Add,
-    Remove,
     Edit,
     Delete
 }

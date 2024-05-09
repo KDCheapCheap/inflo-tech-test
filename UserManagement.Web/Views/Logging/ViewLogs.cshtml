@@ -1,0 +1,48 @@
+﻿@{
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Log ID</th>
+                    <th>User ID</th>
+                    <th>Message</th>
+                    <th>Date Created</th>
+                    <th>Action</th>
+                    <th style="width: 1px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>
+                            @item.Id
+                        </td>
+                        <td>
+                            @item.UserId
+                        </td>
+                        <td>
+                            @item.Message
+                        </td>
+                        <td>
+                            @item.Created
+                        </td>
+                        <td>
+                            @item.Action.ToString()
+                        </td>
+                        <td>
+                            <div class="dropdown">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" id="btnToggleActions">
+                                    Actions
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="btnToggleActions">
+                                    <li><a class="dropdown-item" asp-controller="Logging" asp-action="DeleteLog" asp-route-logId="@item.Id" onclick="return confirm('Are you sure you want to delete this user?')">Delete</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

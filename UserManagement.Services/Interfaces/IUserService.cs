@@ -38,4 +38,5 @@ public interface IUserService
     void DeleteUser(long id);
 
     User UpdateUser(User editedUser);
+    User GetUserByIdUntracked(long id);
 }

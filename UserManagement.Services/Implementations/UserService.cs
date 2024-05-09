@@ -24,9 +24,20 @@ public class UserService : IUserService
         return filteredUsers;
     }
 
-    public IEnumerable<User> GetAll() => _dataAccess.GetAll<User>();
+    public IEnumerable<User> GetAll()
+    {
+        return _dataAccess.GetAll<User>();
+    }
 
-    public User GetUserById(long id) => _dataAccess.GetById<User>(id);
+    public User GetUserById(long id)
+    {
+        return _dataAccess.GetById<User>(id);
+    }
+
+    public User GetUserByIdUntracked(long id)
+    {
+        return _dataAccess.GetByIdUntracked<User>(id);
+    }
 
     public User CreateUser(User newUser)
     {

@@ -48,6 +48,18 @@ public class DataContext : DbContext, IDataContext
         return entity;
     }
 
+    public TEntity GetByIdUntracked<TEntity>(long id) where TEntity : class
+    {
+        var entity = Set<TEntity>().AsNoTracking().SingleOrDefault(e => EF.Property<long>(e, "Id") == id);
+
+        if (entity == null)
+        {
+            throw new Exception("Cannot find user for ID: " +  id);
+        }
+
+        return entity;
+    }
+
     public async Task<TEntity> GetByIdAsync<TEntity>(long id) where TEntity : class
     {
         var entity = await Set<TEntity>().FindAsync(id);

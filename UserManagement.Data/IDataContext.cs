@@ -20,6 +20,16 @@ public interface IDataContext
     TEntity Create<TEntity>(TEntity entity) where TEntity : class;
 
     /// <summary>
+    /// Get an entity by a <see cref="long"/> Id.
+    /// </summary>
+    TEntity GetById<TEntity>(long id) where TEntity : class;
+
+    /// <summary>
+    /// Gets an Entity by ID without tracking the entity.
+    /// </summary>
+    TEntity GetByIdUntracked<TEntity>(long id) where TEntity : class;
+
+    /// <summary>
     /// Uodate an existing item matching the ID
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
@@ -28,5 +38,5 @@ public interface IDataContext
     TEntity Update<TEntity>(TEntity entity) where TEntity : class;
 
     void Delete<TEntity>(TEntity entity) where TEntity : class;
-    TEntity GetById<TEntity>(long id) where TEntity : class;
+
 }
