@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.AspNetCore.Routing;
+using Newtonsoft.Json;
+using UserManagement.Data.Entities;
 using UserManagement.Models;
 using UserManagement.Services.Domain.Interfaces;
 using UserManagement.Web.Models.Users;
@@ -113,7 +115,7 @@ public class UsersController : Controller
     {
         var userToEdit = _userService.GetUserById(userId);
 
-        if(userToEdit == null)
+        if (userToEdit == null)
         {
             RedirectToAction("List");
             return View();
@@ -127,9 +129,21 @@ public class UsersController : Controller
     [ActionName("UpdateUser")]
     public IActionResult EditUser(User userToEdit)
     {
+        User userBeforeChange = _userService.GetUserById(userToEdit.Id);
+
         try
         {
             var editedUser = _userService.UpdateUser(userToEdit);
+
+            UserLog editLog = new UserLog()
+            {
+                UserId = userToEdit.Id,
+                Action = Data.Enums.UserLogAction.Edit,
+                Created = DateTime.UtcNow,
+                Message = $"Edited {userBeforeChange.Forename} {userBeforeChange.Surname}",
+                BeforeChange = JsonConvert.SerializeObject(userBeforeChange),
+                AfterChange = JsonConvert.SerializeObject(editedUser)
+            };
 
             return RedirectToAction("View", new { id = editedUser.Id });
         }

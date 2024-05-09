@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using UserManagement.Data.Entities;
 using UserManagement.Models;
 
 namespace UserManagement.Data;
@@ -29,6 +31,7 @@ public class DataContext : DbContext, IDataContext
         });
 
     public DbSet<User>? Users { get; set; }
+    public DbSet<UserLog> UserLogs { get; set; }
 
     public IQueryable<TEntity> GetAll<TEntity>() where TEntity : class
         => base.Set<TEntity>();
@@ -40,6 +43,18 @@ public class DataContext : DbContext, IDataContext
         if (entity == null)
         {
             throw new Exception("Cannot find user for ID: " +  id);
+        }
+
+        return entity;
+    }
+
+    public async Task<TEntity> GetByIdAsync<TEntity>(long id) where TEntity : class
+    {
+        var entity = await Set<TEntity>().FindAsync(id);
+
+        if (entity == null)
+        {
+            throw new Exception("Cannot find user for ID: " + id);
         }
 
         return entity;
