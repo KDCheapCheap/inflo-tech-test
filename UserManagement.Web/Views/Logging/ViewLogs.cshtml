@@ -1,4 +1,13 @@
 ﻿@{
+    @if (string.IsNullOrEmpty(Model.UsersName))
+    {
+        <h2>User Logs</h2>
+    }
+    else
+    {
+        <h2>Logs for @Model.UsersName</h2>
+    }
+
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>

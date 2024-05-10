@@ -5,6 +5,7 @@ namespace UserManagement.Web.Models;
 
 public class UserLogListViewModel
 {
+    public string UsersName { get; set; } = string.Empty;
     public List<UserLogListItemViewModel> Items { get; set; } = new();
 }
 
