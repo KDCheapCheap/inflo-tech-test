@@ -1,0 +1,32 @@
+﻿@{
+    <div class="container">
+        <h1>User Details</h1>
+
+        <dl class="row-dl">
+            <dt class="col-sm-3">Id:</dt>
+            <dd class="col-sm-9 bg-light">@Model.Log.Id</dd>
+            <dt class="col-sm-3">UserId:</dt>
+            <dd class="col-sm-9 bg-light">@Model.Log.UserId</dd>
+            <dt class="col-sm-3">Message:</dt>
+            <dd class="col-sm-9 bg-light">@Model.Log.Message</dd>
+            <dt class="col-sm-3">Date Created:</dt>
+            <dd class="col-sm-9 bg-light">@Model.Log.Created</dd>
+            <dt class="col-sm-3">Action:</dt>
+            <dd class="col-sm-9 bg-light">@Model.Log.Action</dd>
+        </dl>
+
+        @{
+            JToken beforeJson = JToken.Parse(@Model.Log.BeforeChange);
+            string formattedBeforeJson = JsonConvert.SerializeObject(beforeJson, Formatting.Indented);
+
+            JToken afterJson = JToken.Parse(@Model.Log.AfterChange);
+            string formattedAfterJson = JsonConvert.SerializeObject(afterJson, Formatting.Indented);
+        }
+
+        <h3>Before Change:</h3>
+        <textarea rows="10" cols="50" readonly>@formattedBeforeJson</textarea>
+
+        <h3>After Change:</h3>
+        <textarea rows="10" cols="50" readonly>@formattedAfterJson</textarea>
+    </div>
+}

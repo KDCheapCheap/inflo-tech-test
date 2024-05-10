@@ -8,4 +8,5 @@ public interface IUserLoggingService
     void DeleteLogEntry(long logId);
     IEnumerable<UserLog> GetAllLogs();
     List<UserLog> GetAllLogsForUser(long userId);
+    UserLog GetLogById(long logId);
 }

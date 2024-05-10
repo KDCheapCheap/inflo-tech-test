@@ -35,7 +35,7 @@ public class UserLoggingService : IUserLoggingService
         {
             _dataAccess.Create(log);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             Console.WriteLine($"Error creating log entry. Message: {ex.Message}");
             throw;
@@ -50,6 +50,15 @@ public class UserLoggingService : IUserLoggingService
         {
             Console.WriteLine($"Cannot find Log with ID: {logId}");
             throw new KeyNotFoundException($"Cannot find Log with ID: {logId}");
+        }
+
+        try
+        {
+            _dataAccess.Delete(logToDelete);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error when deleting Log. Message: {ex.Message}");
         }
     }
 }

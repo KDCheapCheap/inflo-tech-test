@@ -2,6 +2,7 @@
 using UserManagement.Models;
 using UserManagement.Services.Domain.Interfaces;
 using UserManagement.Web.Models;
+using UserManagement.Web.Models.Users;
 
 namespace UserManagement.Web.Controllers;
 
@@ -61,5 +62,17 @@ public class LoggingController : Controller
         };
 
         return View(model);
+    }
+
+    public ViewResult ViewLogSummary(long logId)
+    {
+        var log = _userLoggingService.GetLogById(logId);
+
+        var logModel = new LogSummaryViewModel
+        {
+            Log = log
+        };
+
+        return View(logModel);
     }
 }
