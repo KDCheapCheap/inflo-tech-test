@@ -1,0 +1,24 @@
+﻿@{
+    <div class="container">
+        <h1>User Details</h1>
+
+        <dl class="row-dl">
+            <dt class="col-sm-3">Id:</dt>
+            <dd class="col-sm-9 bg-light">@Model.user.Id</dd>
+            <dt class="col-sm-3">Forename:</dt>
+            <dd class="col-sm-9 bg-light">@Model.user.Forename</dd>
+            <dt class="col-sm-3">Surname:</dt>
+            <dd class="col-sm-9 bg-light">@Model.user.Surname</dd>
+            <dt class="col-sm-3">Email:</dt>
+            <dd class="col-sm-9 bg-light">@Model.user.Email</dd>
+            <dt class="col-sm-3">Date of Birth:</dt>
+            <dd class="col-sm-9 bg-light">@Model.user.DateOfBirth.ToShortDateString()</dd>
+            <dt class="col-sm-3">Is Active:</dt>
+            <dd class="col-sm-9 bg-light">@((Model.user.IsActive ? "Yes" : "No"))</dd>
+        </dl>
+    </div>
+
+    <a asp-controller="Users" asp-action="EditUser" asp-route-userId="@Model.user.Id" class="btn btn-secondary mr-5">Edit</a>
+    <a asp-controller="Logging" asp-action="ViewLogs" asp-route-userId="@Model.user.Id" class="btn btn-secondary mr-5">User Logs</a>
+    <a asp-controller="Users" asp-action="DeleteUser" asp-route-userId="@Model.user.Id" onclick="return confirm('Are you sure you want to delete this user?')" class="btn btn-danger">Delete</a>
+}

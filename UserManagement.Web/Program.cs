@@ -14,7 +14,6 @@ builder.Services
 var app = builder.Build();
 
 app.UseMarkdown();
-
 app.UseHsts();
 app.UseHttpsRedirection();
 app.UseStaticFiles();

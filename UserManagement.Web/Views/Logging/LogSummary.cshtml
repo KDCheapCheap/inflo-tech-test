@@ -1,0 +1,43 @@
+﻿@using Newtonsoft.Json
+@using Newtonsoft.Json.Linq
+
+@{
+    <div class="container">
+        <h1>Log Details</h1>
+
+        <dl class="row-dl">
+            <dt class="col-sm-3">Id:</dt>
+            <dd class="col-sm-9 bg-light">@Model.Log.Id</dd>
+            <dt class="col-sm-3">UserId:</dt>
+            <dd class="col-sm-9 bg-light">@Model.Log.UserId</dd>
+            <dt class="col-sm-3">Message:</dt>
+            <dd class="col-sm-9 bg-light">@Model.Log.Message</dd>
+            <dt class="col-sm-3">Date Created:</dt>
+            <dd class="col-sm-9 bg-light">@Model.Log.Created</dd>
+            <dt class="col-sm-3">Action:</dt>
+            <dd class="col-sm-9 bg-light">@Model.Log.Action</dd>
+        </dl>
+
+        @{
+            string formattedBeforeJson = string.Empty;
+            @if (!string.IsNullOrEmpty(Model.Log.BeforeChange))
+            {
+                JToken beforeJson = JToken.Parse(@Model.Log.BeforeChange);
+                formattedBeforeJson = JsonConvert.SerializeObject(beforeJson, Formatting.Indented);
+            }
+
+            string formattedAfterJson = string.Empty;
+            @if (!string.IsNullOrEmpty(Model.Log.AfterChange))
+            {
+                JToken afterJson = JToken.Parse(@Model.Log.AfterChange);
+                formattedAfterJson = JsonConvert.SerializeObject(afterJson, Formatting.Indented);
+            }
+        }
+
+        <h3>Before Change:</h3>
+        <textarea rows="10" cols="50" readonly>@formattedBeforeJson</textarea>
+
+        <h3>After Change:</h3>
+        <textarea rows="10" cols="50" readonly>@formattedAfterJson</textarea>
+    </div>
+}
