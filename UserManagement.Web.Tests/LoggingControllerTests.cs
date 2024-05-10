@@ -55,8 +55,8 @@ public class LoggingControllerTests
         var user = new User { Id = userId, Forename = "John", Surname = "Doe" };
         var logs = new List<UserLog>
             {
-                new UserLog { Id = 1, UserId = userId, Message = "Log 1", Created = DateTime.Now, Action = UserLogAction.Add },
-                new UserLog { Id = 2, UserId = userId, Message = "Log 2", Created = DateTime.Now.AddDays(-1), Action = UserLogAction.Edit },
+                new UserLog { Id = 1, UserId = userId, Message = "Log 1", Created = DateTime.Now, Action = UserLogAction.Add, LastKnownName = $"{user.Forename} {user.Surname}" },
+                new UserLog { Id = 2, UserId = userId, Message = "Log 2", Created = DateTime.Now.AddDays(-1), Action = UserLogAction.Edit, LastKnownName = $"{user.Forename} {user.Surname}" },
             };
         _userServiceMock.Setup(x => x.GetUserById(userId)).Returns(user);
         _userLoggingServiceMock.Setup(x => x.GetAllLogsForUser(userId)).Returns(logs);

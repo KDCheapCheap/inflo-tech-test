@@ -14,7 +14,7 @@ public class UserLogListItemViewModel
 {
     public long Id { get; set; }
 
-    public long UserId { get; set; }
+    public long UserId { get; set; } = 0;
     public string UserName { get; set; } = string.Empty;
     public string Message { get; set; } = string.Empty;
 

@@ -191,8 +191,9 @@ public class UserControllerTests
         // Verify log creation
         _userLoggingServiceMock.Verify(x => x.CreateLogEntry(It.Is<UserLog>(log =>
             log.UserId == editedUser.Id &&
+            log.LastKnownName == $"{editedUser.Forename} {editedUser.Surname}" &&
             log.Action == UserLogAction.Edit &&
-            log.Message == $"Edited User ID: {editedUser.Id}" &&
+            log.Message == $"Edited User: {editedUser.Id}" &&
             log.BeforeChange == userJsonBeforeChange &&
             log.AfterChange == JsonConvert.SerializeObject(editedUser)
         )), Times.Once);
@@ -205,7 +206,7 @@ public class UserControllerTests
         var userId = 1;
         var userBeforeDeletion = new User { Id = userId, Forename = "John", Surname = "Doe", Email = "john.doe@example.com", IsActive = true };
         var userToDelete = new User { Id = userId, Forename = "John", Surname = "Doe", Email = "john.doe@example.com", IsActive = true };
-        var logToDelete = new UserLog { Id = 1, UserId = userId, Action = UserLogAction.Edit };
+        var logToDelete = new UserLog { Id = 1, UserId = userId, Action = UserLogAction.Delete };
         _userServiceMock.Setup(x => x.GetUserById(userId)).Returns(userBeforeDeletion);
         _userServiceMock.Setup(x => x.DeleteUser(userId));
         _userLoggingServiceMock.Setup(x => x.CreateLogEntry(It.IsAny<UserLog>()));
@@ -222,11 +223,12 @@ public class UserControllerTests
         // Verify log creation
         _userLoggingServiceMock.Verify(x => x.CreateLogEntry(It.Is<UserLog>(log =>
             log.UserId == userBeforeDeletion.Id &&
-            log.Action == UserLogAction.Edit &&
-            log.Message == $"Deleted {userBeforeDeletion.Forename} {userBeforeDeletion.Surname}" &&
+            log.LastKnownName == $"{userBeforeDeletion.Forename} {userBeforeDeletion.Surname}" &&
+            log.Action == UserLogAction.Delete &&
+            log.Message == $"Deleted User {userBeforeDeletion.Id}" &&
             log.BeforeChange == JsonConvert.SerializeObject(userBeforeDeletion) &&
             log.AfterChange == string.Empty
-        )), Times.Once);
+)),         Times.Once);
     }
 
     [Fact]

@@ -37,11 +37,13 @@ public class LoggingController : Controller
     {
         var items = _userLoggingService.GetAllLogsForUser(userId).Select(l => new UserLogListItemViewModel(l));
 
+        var username = items.First(x => x.UserId == userId).UserName;
         UserLogListViewModel model = new UserLogListViewModel()
         {
             Items = items.ToList(),
-            UsersName = items.ToList()[0].UserName
+            UsersName = username
         };
+
 
         return View(model);
     }
