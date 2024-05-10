@@ -1,6 +1,9 @@
-﻿@{
+﻿@using Newtonsoft.Json
+@using Newtonsoft.Json.Linq
+
+@{
     <div class="container">
-        <h1>User Details</h1>
+        <h1>Log Details</h1>
 
         <dl class="row-dl">
             <dt class="col-sm-3">Id:</dt>
@@ -16,11 +19,19 @@
         </dl>
 
         @{
-            JToken beforeJson = JToken.Parse(@Model.Log.BeforeChange);
-            string formattedBeforeJson = JsonConvert.SerializeObject(beforeJson, Formatting.Indented);
+            string formattedBeforeJson = string.Empty;
+            @if (!string.IsNullOrEmpty(Model.Log.BeforeChange))
+            {
+                JToken beforeJson = JToken.Parse(@Model.Log.BeforeChange);
+                formattedBeforeJson = JsonConvert.SerializeObject(beforeJson, Formatting.Indented);
+            }
 
-            JToken afterJson = JToken.Parse(@Model.Log.AfterChange);
-            string formattedAfterJson = JsonConvert.SerializeObject(afterJson, Formatting.Indented);
+            string formattedAfterJson = string.Empty;
+            @if (!string.IsNullOrEmpty(Model.Log.AfterChange))
+            {
+                JToken afterJson = JToken.Parse(@Model.Log.AfterChange);
+                formattedAfterJson = JsonConvert.SerializeObject(afterJson, Formatting.Indented);
+            }
         }
 
         <h3>Before Change:</h3>
