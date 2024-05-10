@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -34,11 +35,30 @@ public class DataContext : DbContext, IDataContext
     public DbSet<UserLog> UserLogs { get; set; }
 
     public IQueryable<TEntity> GetAll<TEntity>() where TEntity : class
-        => base.Set<TEntity>();
+    {
+        return base.Set<TEntity>();
+    }
+
+    public async Task<List<TEntity>> GetAllAsync<TEntity>() where TEntity : class
+    {
+        return await Set<TEntity>().ToListAsync();
+    }
 
     public TEntity GetById<TEntity>(long id) where TEntity : class
     {
         var entity = Set<TEntity>().Find(id);
+
+        if (entity == null)
+        {
+            throw new Exception("Cannot find user for ID: " +  id);
+        }
+
+        return entity;
+    }
+
+    public async Task<TEntity> GetByIdAsync<TEntity>(long id) where TEntity : class
+    {
+        var entity = await Set<TEntity>().FindAsync(id);
 
         if (entity == null)
         {
@@ -60,13 +80,13 @@ public class DataContext : DbContext, IDataContext
         return entity;
     }
 
-    public async Task<TEntity> GetByIdAsync<TEntity>(long id) where TEntity : class
+    public async Task<TEntity> GetByIdUntrackedAsync<TEntity>(long id) where TEntity : class
     {
-        var entity = await Set<TEntity>().FindAsync(id);
+        var entity = await Set<TEntity>().AsNoTracking().SingleOrDefaultAsync(e => EF.Property<long>(e, "Id") == id);
 
         if (entity == null)
         {
-            throw new Exception("Cannot find user for ID: " + id);
+            throw new Exception("Cannot find user for ID: " +  id);
         }
 
         return entity;
@@ -80,6 +100,14 @@ public class DataContext : DbContext, IDataContext
         return entity;
     }
 
+    public async Task<TEntity> CreateAsync<TEntity>(TEntity entity) where TEntity : class
+    {
+        var add = await base.AddAsync(entity);
+        await SaveChangesAsync();
+
+        return add.Entity;
+    }
+
     public new TEntity Update<TEntity>(TEntity entity) where TEntity : class
     {
         base.Update(entity);
@@ -88,9 +116,23 @@ public class DataContext : DbContext, IDataContext
         return entity;
     }
 
+    public async Task<TEntity> UpdateAsync<TEntity>(TEntity entity) where TEntity : class
+    {
+        var update = base.Update(entity);
+        await SaveChangesAsync();
+
+        return entity;
+    }
+
     public void Delete<TEntity>(TEntity entity) where TEntity : class
     {
         base.Remove(entity);
         SaveChanges();
+    }
+
+    public async Task DeleteAsync<TEntity>(TEntity entity) where TEntity : class
+    {
+        base.Remove(entity);
+        await SaveChangesAsync();
     }
 }
