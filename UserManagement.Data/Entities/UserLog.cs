@@ -11,6 +11,7 @@ public class UserLog
     public long Id { get; set; }
 
     public long UserId { get; set; }
+    public string LastKnownName { get; set; } = string.Empty;
     public string Message { get; set; } = string.Empty;
 
     public DateTime Created { get; set; }

@@ -50,7 +50,7 @@ public class DataContext : DbContext, IDataContext
 
         if (entity == null)
         {
-            throw new Exception("Cannot find user for ID: " +  id);
+            throw new Exception("Cannot find Entity for ID: " +  id);
         }
 
         return entity;

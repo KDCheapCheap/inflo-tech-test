@@ -88,9 +88,10 @@ public class UsersController : Controller
             UserLog createLog = new UserLog()
             {
                 UserId = createdUser.Id,
+                LastKnownName = $"{createdUser.Forename} {createdUser.Surname}",
                 Action = Data.Enums.UserLogAction.Add,
                 Created = DateTime.UtcNow,
-                Message = $"Created {createdUser.Forename} {createdUser.Surname}",
+                Message = $"Created User {createdUser.Id}",
                 AfterChange = JsonConvert.SerializeObject(createdUser)
             };
 
@@ -150,21 +151,21 @@ public class UsersController : Controller
     public IActionResult EditUser(User userToEdit)
     {
         string userBeforeChange = JsonConvert.SerializeObject(_userService.GetUserByIdUntracked(userToEdit.Id));
-        
+
         try
         {
+            var editedUser = _userService.UpdateUser(userToEdit);
+
             UserLog editLog = new UserLog()
             {
                 UserId = userToEdit.Id,
+                LastKnownName = $"{editedUser.Forename} {editedUser.Surname}",
                 Action = Data.Enums.UserLogAction.Edit,
                 Created = DateTime.UtcNow,
-                Message = $"Edited User ID: {userToEdit.Id}",
+                Message = $"Edited User: {userToEdit.Id}",
                 BeforeChange = userBeforeChange,
+                AfterChange = JsonConvert.SerializeObject(editedUser)
             };
-
-            var editedUser = _userService.UpdateUser(userToEdit);
-
-            editLog.AfterChange = JsonConvert.SerializeObject(editedUser);
 
             _userLoggingService.CreateLogEntry(editLog);
 
@@ -190,9 +191,10 @@ public class UsersController : Controller
             UserLog deleteLog = new UserLog()
             {
                 UserId = userBeforeDeletion.Id,
-                Action = Data.Enums.UserLogAction.Edit,
+                LastKnownName = $"{userBeforeDeletion.Forename} {userBeforeDeletion.Surname}",
+                Action = Data.Enums.UserLogAction.Delete,
                 Created = DateTime.UtcNow,
-                Message = $"Deleted {userBeforeDeletion.Forename} {userBeforeDeletion.Surname}",
+                Message = $"Deleted User {userBeforeDeletion.Id}",
                 BeforeChange = JsonConvert.SerializeObject(userBeforeDeletion),
                 AfterChange = string.Empty
             };

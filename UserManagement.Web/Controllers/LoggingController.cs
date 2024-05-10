@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using UserManagement.Models;
 using UserManagement.Services.Domain.Interfaces;
 using UserManagement.Web.Models;
 
@@ -21,14 +20,7 @@ public class LoggingController : Controller
     [Route("ViewLogs")]
     public ViewResult ViewLogs()
     {
-        var items = _userLoggingService.GetAllLogs().Select(l => new UserLogListItemViewModel()
-        {
-            Id = l.Id,
-            UserId = l.UserId,
-            Message = l.Message,
-            Created = l.Created,
-            Action = l.Action,
-        });
+        var items = _userLoggingService.GetAllLogs().Select(l => new UserLogListItemViewModel(l));
 
         UserLogListViewModel model = new UserLogListViewModel()
         {
@@ -43,21 +35,12 @@ public class LoggingController : Controller
     [ActionName("ViewLogs")]
     public ViewResult ViewLogsForUser(long userId)
     {
-        User user = _userService.GetUserById(userId);
-
-        var items = _userLoggingService.GetAllLogsForUser(userId).Select(l => new UserLogListItemViewModel()
-        {
-            Id = l.Id,
-            UserId = l.UserId,
-            Message = l.Message,
-            Created = l.Created,
-            Action = l.Action,
-        });
+        var items = _userLoggingService.GetAllLogsForUser(userId).Select(l => new UserLogListItemViewModel(l));
 
         UserLogListViewModel model = new UserLogListViewModel()
         {
             Items = items.ToList(),
-            UsersName = $"{user.Forename} {user.Surname}"
+            UsersName = items.ToList()[0].UserName
         };
 
         return View(model);
