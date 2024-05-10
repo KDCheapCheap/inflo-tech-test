@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using UserManagement.Models;
 using UserManagement.Services.Domain.Interfaces;
 using UserManagement.Web.Models.Users;
@@ -43,6 +45,28 @@ public class UserControllerTests
         return users;
     }
 
+    [Fact]
+    public void CreateUser_ReturnsRedirectToActionResult_WhenModelStateIsValid()
+    {
+        // Arrange
+        var newUser = new User();
+        var userServiceMock = new Mock<IUserService>();
+        userServiceMock.Setup(x => x.CreateUser(newUser)).Returns(newUser);
+        var loggerMock = new Mock<ILogger<UsersController>>();
+        var userLoggingServiceMock = new Mock<IUserLoggingService>();
+        var controller = new UsersController(userServiceMock.Object, loggerMock.Object, userLoggingServiceMock.Object);
+
+        // Act
+        var result = controller.CreateUser(newUser);
+
+        // Assert
+        var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
+        Assert.Equal("View", redirectToActionResult.ActionName);
+        Assert.Equal(newUser.Id, redirectToActionResult?.RouteValues?["id"]);
+    }
+
     private readonly Mock<IUserService> _userService = new();
-    private UsersController CreateController() => new(_userService.Object);
+    private readonly Mock<ILogger<UsersController>> _userLogger = new();
+    private readonly Mock<IUserLoggingService> _userLoggingService = new();
+    private UsersController CreateController() => new(_userService.Object, _userLogger.Object, _userLoggingService.Object);
 }
