@@ -1,36 +1,41 @@
 ﻿@{
-    @model UserManagement.Models.User
+@model UserManagement.Models.User
+
 
     <h1>Create User</h1>
 
     <form asp-controller="Users" asp-action="CreateUser" asp-route-newUser="@Model" method="post">
         <div class="form-group">
             <label asp-for="Forename" class="control-label"></label>
-            <input asp-for="Forename" class="form-control" />
+            <input asp-for="Forename" class="form-control" required/>
             <span asp-validation-for="Forename" class="text-danger"></span>
         </div>
 
         <div class="form-group">
             <label asp-for="Surname" class="control-label"></label>
-            <input asp-for="Surname" class="form-control" />
+            <input asp-for="Surname" class="form-control" required/>
             <span asp-validation-for="Surname" class="text-danger"></span>
         </div>
 
         <div class="form-group">
             <label asp-for="Email" class="control-label"></label>
-            <input asp-for="Email" class="form-control" />
+            <input asp-for="Email" class="form-control" required/>
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
 
+        @{
+            var maxDate = DateTime.Today.ToString("yyyy-MM-dd");
+        }
+
         <div class="form-group">
             <label class="control-label">Date of Birth</label>
-            <input asp-for="DateOfBirth" class="form-control" type="date"/>
+            <input asp-for="DateOfBirth" class="form-control" type="date" max="@maxDate" required/>
             <span asp-validation-for="DateOfBirth" class="text-danger"></span>
         </div>
 
         <div class="form-group">
             <div class="form-check">
-                <input asp-for="IsActive" class="form-check-input" />
+                <input asp-for="IsActive" class="form-check-input"/>
                 <label class="form-check-label" asp-for="IsActive">Active</label>
             </div>
         </div>

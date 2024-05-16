@@ -36,8 +36,14 @@ public class LoggingController : Controller
     public ViewResult ViewLogsForUser(long userId)
     {
         var items = _userLoggingService.GetAllLogsForUser(userId).Select(l => new UserLogListItemViewModel(l));
+        var user = _userService.GetUserById(userId);
+        string username = string.Empty;
 
-        var username = items.First(x => x.UserId == userId).UserName;
+        if (user != null)
+        {
+            username = $"{user.Forename} {user.Surname}";
+        }
+
         UserLogListViewModel model = new UserLogListViewModel()
         {
             Items = items.ToList(),
